@@ -1,0 +1,31 @@
+{
+  "name": "wsapi",
+  "version": "1.0.0",
+  "description": "A backend solution for accessing WS-API",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "web service"
+  ],
+  "author": "Alexander Wirdemo",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "connect-mongodb-session": "^3.1.1",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "entities": "^3.0.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "mongodb": "^4.1.3",
+    "mongoose": "^5.13.12"
+  },
+  "engines": {
+    "node": "14.15.0"
+  }
+}
