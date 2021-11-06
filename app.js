@@ -8,8 +8,10 @@ const mongoDBStore = require("connect-mongodb-session")(session);
 const cookieParser = require('cookie-parser');
 
 // Läs in Schemana
-var Students = require("./models/student.js");
+var Student = require("./models/student.js");
 var Module = require("./models/module.js");
+var Registrering = require("./models/register.js");
+var Result = require("./models/result.js");
 
 //const cors = require('cors');
 
@@ -59,7 +61,7 @@ client.connect(err => {
 });*/
 
 // Port
-const port = process.env.PORT || 3009;
+const port = process.env.PORT || 3034;
 
 // Express-session
 /*
@@ -85,7 +87,7 @@ app.use((req, res, next) => {
 //app.use(bodyParser.json());
 //app.use(bodyParser.urlencoded( { extended: false}));
 
-require("./routes/webservice")(app, Module);
+require("./routes/webservice")(app, Module, Registrering, Student, Result);
 
 // Skapa statisk sökväg
 //app.use(express.static(path.join(__dirname, 'public'))); // fixa

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-//var Schema = mongoose.Schema;
 
 const ModuleSchema = new mongoose.Schema(
     {
