@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const cors = require('cors');
 const session = require('express-session');
 const mongoDBStore = require("connect-mongodb-session")(session);
 const cookieParser = require('cookie-parser');
@@ -45,6 +46,8 @@ const port = process.env.PORT || 3036;
 
 // Body parser
 app.use(bodyParser.json());
+
+app.use(cors());
 
 require("./routes/webservice")(app, Module, Registrering, Student, Result);
 
