@@ -1,6 +1,6 @@
 const entities = require("entities");
 module.exports = function(app, Module, Registrering, Student, Result){
-//var Module = require("../models/module");
+var Resultat = require("../models/result.js");
 
 // GET-anrop alla aktiva moduler
 app.get("/epok/api/modules", function(req, res) {
@@ -20,15 +20,6 @@ app.get("/epok/api/modules", function(req, res) {
             }
         }
         
-        //const activeModule = new Module();
-        /*
-        if(result.activeModules==true){
-            activeModule.aktiv_modul = result.activeModule;
-            activeModule.kurskod = result.kurskod;
-            activeModule.benamning = result.benamning;
-            activeModule.kod = result.kod;
-            activeModules.push(allModules);
-        }*/
         console.dir(activeModules);
         res.status(200).send(activeModules);
         
@@ -52,14 +43,6 @@ app.get("/epok/api/modules/:courseCode", function(req, res) {
                 activeModules.push(result[index]._doc); 
             }
         }
-/*
-        if(result.activeModules==true){
-            activeModule.aktiv_modul = result.activeModule;
-            activeModule.kurskod = result.kurskod;
-            activeModule.benamning = result.benamning;
-            activeModule.kod = result.kod;
-            activeModules.push(activeModule);
-        }*/
         console.dir(activeModules);
         res.status(200).send(activeModules);
         
@@ -88,7 +71,6 @@ app.get("/studentITS/api/students", function(req, res) {
 
 // GET-anrop en students personnummer OK
 app.get("/studentITS/api/students/:studentId", function(req, res) {
-    //selectedStudent=[];
     const studentId = req.params.studentId;
     var student = '';
     console.log('studentId', studentId);
@@ -97,44 +79,11 @@ app.get("/studentITS/api/students/:studentId", function(req, res) {
         if(result.length===1){
             student = result[result.length-1]._doc;
             console.dir(student);
-            //res.status(200).send(student);
-            
         }
         res.status(200).send(student);
-
-        //selectedStudent.push(studentCivicNo);
-
-        
-        
     });
 
     });
-
-    /*
-    app.get("/ladok/api/students/:courseCode/:module", function(req, res) {
-
-        for(let index=0; index<registeredStudents.length; index++){
-            const studentId = registeredStudents[index];
-            console.log('studentId: ', studentId);
-            
-            Student.find({studentID: studentId}, function(err, result){
-                console.log('resultat');
-                console.log(result.length);
-                //console.dir(result);
-                if(result.length===1){
-                    console.log('nu');
-                    student = result[result.length-1]._doc;
-                    console.dir(student);  
-                    students.push(student); 
-                    console.log('students:');
-                    console.dir(students); 
-                }
-            });
-            console.log('students:');
-            console.dir(students);
-        }
-    });*/
-
 
 // GET-anrop studenter registrerade på vald modul OK
 app.get("/ladok/api/students/:courseCode/:module", function(req, res) {
@@ -149,6 +98,7 @@ app.get("/ladok/api/students/:courseCode/:module", function(req, res) {
         const activeModule = new Module();
 
         for(let index=0; index<result.length; index++){
+            console.log('här sker');
             console.dir(result[index]._doc);
             allRegistrations.push(result[index]._doc);
         }
@@ -163,45 +113,6 @@ app.get("/ladok/api/students/:courseCode/:module", function(req, res) {
             }
         }
         console.dir(registeredStudents);
-        
-        /*
-        for(let index=0; index<registeredStudents.length; index++){
-            const studentId = registeredStudents[index];
-            console.log('studentId: ', studentId);
-            
-            Student.find({studentID: studentId}, function(err, result){
-                console.log('resultat');
-                console.log(result.length);
-                //console.dir(result);
-                if(result.length===1){
-                    console.log('nu');
-                    student = result[result.length-1]._doc;
-                    console.dir(student);  
-                    students.push(student); 
-                    console.log('students:');
-                    console.dir(students); 
-                }
-            });
-            console.log('students:');
-            console.dir(students);
-        }*/
-        /*
-        for(let index=0; index<students.length; index++){
-            const studentCivicNo = students[index].personnummer;
-            console.log('personnummer: ', studentCivicNo);
-            
-            Result.find({personnummer: studentCivicNo}, function(err, result){
-                console.log('kolla:');
-                console.dir(result);
-                if(result.length===1){
-                    console.log('Found match!');
-                    studentResult = result[result.length-1]._doc;
-                    console.dir(studentResult);  
-                    results.push(studentResult);  
-                }
-            });
-        }*/
-        
         res.status(200).send(registeredStudents);
         
     });
@@ -213,7 +124,6 @@ app.get("/ladok/api/students/:courseCode/:module", function(req, res) {
         Result.find(function(err, result){
                 console.log('kolla:');
                 console.dir(result);
-                //res.status(200).send(result);
                 res.status(200).send(result);
             });
             
@@ -228,13 +138,55 @@ app.get("/ladok/api/students/:courseCode/:module", function(req, res) {
         Result.find({personnummer: civicNo}, function(err, result){
                 console.log('kolla:');
                 console.dir(result);
-                //res.status(200).send(result);
                 res.status(200).send(result);
             });
             
         
     });
 
+// Uppdatera resultat
+app.put("/ladok/api/add/results", function(req, res) {
+    
+        var filter = {
+            kurskod: req.body.kurskod, 
+            personnummer: req.body.personnummer
+        };
+        var grade = [
+            {   
+                examinationsdatum: req.body.examinationsdatum, 
+                resultat: req.body.resultLadok, 
+                modul: req.body.modul
+            }];
+        var newValues = { $set: { betyg_ladok : grade, status: "Attesterad" } };
+
+        Result.updateOne(filter, newValues, function(err, res) {
+            if(err) {
+                res.send(err);
+            }
+          });
+    });
+
+// Lägga till resultat
+app.put("/ladok/api/add/results/final", function(req, res) {
+
+    Result.findOneAndUpdate({kurskod: req.body.kurskod, personnummer: req.body.personnummer}, req.body);
+        
+        // Sparar resultatet, fångar upp felmeddelanden
+        result.save(function(err) {
+            if(err) {
+                res.send(err);
+            }
+    
+            res.send(result);
+        });
+
+
+});
+
+
+
     
 
 }
+
+
