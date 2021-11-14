@@ -21,8 +21,6 @@ const dbname = "Webservice";
 
 // Ansluta till MongoDB
 mongoose.connect(
-    //`mongodb+srv://admin:ltuservice@ltu-rest-ws.mwzyn.mongodb.net/Webservice?retryWrites=true&w=majority`,
-  
     `mongodb+srv://${username}:${password}@${cluster}.mwzyn.mongodb.net/${dbname}?retryWrites=true&w=majority`, 
   {
     useNewUrlParser: true,
